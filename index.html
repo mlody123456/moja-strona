@@ -171,8 +171,8 @@
 
     <script>
         // Przechowywanie danych logowania
-        const storedUsername = "malpa";
-        const storedPassword = "malpa123";
+        const storedUsername = "123";  // Zmieniono na "123"
+        const storedPassword = "123";  // Zmieniono na "123"
 
         // Funkcja logowania
         document.getElementById("login-form").addEventListener("submit", function(e) {
@@ -212,4 +212,10 @@
             // Tworzenie siatki
             for (let i = 0; i < 36; i++) {
                 const cell = document.createElement("div");
-                cell.classList.add
+                cell.classList.add("grid-item");
+                cell.addEventListener("click", () => addNumber(i));
+                cell.addEventListener("contextmenu", (e) => removeNumber(e, i));
+                gridContainer.appendChild(cell);
+            }
+
+            // Render
