@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu Neon</title>
+<style>
+body{
+  margin:0;height:100vh;display:flex;justify-content:center;align-items:center;flex-direction:column;
+  background:#000;font-family:'Courier New',monospace;color:#0f0;text-align:center;overflow:hidden;
+}
+body::before{
+  content:"";position:absolute;width:100%;height:100%;
+  background:radial-gradient(circle at center,#0f0 0%,#000 70%);
+  animation:pulse 4s infinite alternate; z-index:-1;
+}
+@keyframes pulse{0%{opacity:0.2;}100%{opacity:0.6;}}
+#fade-cover{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:999;pointer-events:none;opacity:1;transition:opacity 0.8s ease;}
+.fade-out{opacity:1;}
+
+h1{
+  font-size:60px;
+  color:#0f0;
+  text-shadow:0 0 20px #0f0,0 0 40px #0f0,0 0 60px #0f0;
+  margin-bottom:50px;
+  font-weight:bold;
+  animation:titlePulse 2s infinite alternate;
+}
+@keyframes titlePulse{
+  0%{text-shadow:0 0 20px #0f0,0 0 40px #0f0,0 0 60px #0f0;}
+  50%{text-shadow:0 0 30px #0f0,0 0 50px #0f0,0 0 70px #0f0;}
+  100%{text-shadow:0 0 20px #0f0,0 0 40px #0f0,0 0 60px #0f0;}
+}
+
+button{
+  background:#000;color:#0f0;border:2px solid #0f0;padding:20px 50px;margin:15px;font-size:22px;cursor:pointer;border-radius:10px;
+  box-shadow:0 0 10px #0f0;transition:all 0.2s;animation:buttonPulse 2s infinite alternate;
+  font-family:'Courier New',monospace;
+}
+button:hover{box-shadow:0 0 30px #0f0,0 0 60px #0f0 inset;transform:scale(1.1);}
+@keyframes buttonPulse{0%{box-shadow:0 0 10px #0f0;}50%{box-shadow:0 0 20px #0f0;}100%{box-shadow:0 0 10px #0f0;}}
+
+#volumeSlider {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  -webkit-appearance: none;
+  background: #000;
+  border: 2px solid #0f0;
+  border-radius: 8px;
+  height: 8px;
+}
+#volumeSlider::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:16px;height:16px;border-radius:50%;background:#0f0;
+  cursor:pointer;box-shadow:0 0 8px #0f0,0 0 12px #0f0 inset;
+}
+</style>
+</head>
+<body>
+
+<div id="fade-cover"></div>
+
+<h1>Wybierz</h1>
+<button onclick="goFlecca()">Flecca Hack</button>
+<input type="range" min="0" max="1" step="0.05" value="1" id="volumeSlider">
+<audio id="click-sound" src="https://freesound.org/data/previews/256/256113_3263906-lq.mp3"></audio>
+
+<script>
+let volume=1;
+document.getElementById("volumeSlider").addEventListener("input", e=>{volume=parseFloat(e.target.value);});
+window.onload=function(){document.getElementById("fade-cover").style.opacity=0;}
+
+function playClick(){
+    const clickAudio=document.getElementById("click-sound");
+    clickAudio.currentTime=0;
+    clickAudio.volume=volume;
+    clickAudio.play();
+}
+
+function goFlecca(){
+    playClick();
+    document.getElementById("fade-cover").classList.add("fade-out");
+    setTimeout(()=>{window.location.href="flecca.html";},800);
+}
+</script>
+</body>
+</html>
