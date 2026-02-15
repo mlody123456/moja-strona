@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flecca Hack</title>
+<style>
+body{
+  margin:0;font-family:'Arial',sans-serif;display:flex;justify-content:center;align-items:center;flex-direction:column;height:100vh;
+  background: linear-gradient(to bottom,#111,#000);overflow:hidden;
+}
+body::before{
+  content:"";position:absolute;width:100%;height:100%;
+  background:radial-gradient(circle at center,#0f0 0%,#000 70%);
+  animation:pulse 4s infinite alternate; z-index:-1;
+}
+@keyframes pulse{0%{opacity:0.2;}100%{opacity:0.6;}}
+#fade-cover{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:999;pointer-events:none;opacity:1;transition:opacity 0.8s ease;}
+
+/* Mega neonowy pulsujący Restart */
+.restart-button{
+  background:#000;color:#0f0;border:2px solid #0f0;padding:14px 32px;font-size:22px;cursor:pointer;border-radius:10px;
+  font-weight:bold;margin-bottom:20px;box-shadow:0 0 15px #0f0,0 0 30px #0f0 inset;animation:restartPulse 1.8s infinite alternate;
+}
+.restart-button:hover{transform:scale(1.1);box-shadow:0 0 40px #0f0,0 0 60px #0f0 inset;}
+.restart-button:active{transform:scale(0.95);}
+@keyframes restartPulse{0%{box-shadow:0 0 15px #0f0,0 0 30px #0f0 inset;}50%{box-shadow:0 0 30px #0f0,0 0 50px #0f0 inset;}100%{box-shadow:0 0 15px #0f0,0 0 30px #0f0 inset;}}
+
+/* Siatka 6x6 */
+.grid-container{display:grid;grid-template-columns:repeat(6,100px);grid-template-rows:repeat(6,100px);gap:10px;}
+.grid-item{width:100px;height:100px;background-color:#222;border:2px solid #4dff91;display:flex;justify-content:center;align-items:center;font-size:30px;color:#4dff91;cursor:pointer;box-shadow:0 0 8px rgba(0,255,145,0.6);text-align:center;white-space:nowrap;}
+.grid-item:hover{background-color:#1a1a1a;}
+.number,.separator{opacity:0; transform:scale(0); display:inline-block;}
+.number{padding:0 3px;border-radius:6px;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;}
+.separator{padding:0 5px;font-size:30px;border-radius:12px;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;color:white;vertical-align:middle;}
+.appear{animation:appear 0.4s forwards;}
+.disappear{animation:disappear 0.4s forwards;}
+@keyframes appear{0%{opacity:0;transform:scale(0);}100%{opacity:1;transform:scale(1);}}
+@keyframes disappear{0%{opacity:1;transform:scale(1);}100%{opacity:0;transform:scale(0);}}
+
+.volume-control{
+  width:150px;margin-top:15px;-webkit-appearance:none;background:#000;border:2px solid #0f0;border-radius:8px;height:8px;
+}
+.volume-control::-webkit-slider-thumb{
+  -webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#0f0;cursor:pointer;box-shadow:0 0 8px #0f0,0 0 12px #0f0 inset;
+}
+</style>
+</head>
+<body>
+
+<div id="fade-cover"></div>
+
+<button class="restart-button" onclick="restartGrid()">Restart</button>
+<div class="grid-container" id="grid-container"></div>
+<input type="range" min="0" max="1" step="0.05" value="1" class="volume-control" id="volumeSlider">
+
+<audio id="click-sound" src="https://freesound.org/data/previews/256/256113_3263906-lq.mp3"></audio>
+
+<script>
+let volume=1;
+document.getElementById("volumeSlider").addEventListener("input", e=>{volume=parseFloat(e.target.value);});
+window.onload=function(){document.getElementById("fade-cover").style.opacity=0;}
+
+const gridContainer=document.getElementById("grid-container");
+let currentNumber=1;
+let lastDeletedNumber=null;
+const cellValues=new Array(36).fill(null).map(()=>[]);
+
+for(let i=0;i<36;i++){
+  const cell=document.createElement("div");
+  cell.classList.add("grid-item");
+  cell.addEventListener("click",()=>{
+    addNumber(i);
+    const clickAudio=document.getElementById("click-sound"); clickAudio.currentTime=0; clickAudio.volume=volume; clickAudio.play();
+  });
+  cell.addEventListener("contextmenu",(e)=>{
+    removeNumber(e,i);
+    const clickAudio=document.getElementById("click-sound"); clickAudio.currentTime=0; clickAudio.volume=volume; clickAudio.play();
+  });
+  gridContainer.appendChild(cell);
+}
+
+function renderCell(index){
+  const cell=gridContainer.children[index];
+  cell.textContent='';
+  cellValues[index].forEach((num,i)=>{
+    if(i>0){const sep=document.createElement('span'); sep.classList.add('separator','appear'); sep.textContent='|'; cell.appendChild(sep);}
+    const numElem=document.createElement('span'); numElem.classList.add('number','appear'); numElem.textContent=num; cell.appendChild(numElem);
+  });
+}
+
+function addNumber(index){
+  const cell=cellValues[index];
+  let numToAdd;
+  if(lastDeletedNumber!==null){numToAdd=lastDeletedNumber; lastDeletedNumber=null;}
+  else{numToAdd=currentNumber; currentNumber++; if(currentNumber>36) currentNumber=1;}
+  cell.push(numToAdd);
+  renderCell(index);
+}
+
+function removeNumber(event,index){
+  event.preventDefault();
+  const cell=cellValues[index];
+  if(cell.length===0) return;
+  lastDeletedNumber=cell.pop();
+  const gridCell=gridContainer.children[index];
+  const elements=Array.from(gridCell.children);
+  elements.forEach(el=>el.classList.add('disappear'));
+  setTimeout(()=>renderCell(index),400);
+}
+
+function restartGrid(){
+  for(let i=0;i<36;i++){
+    const gridCell=gridContainer.children[i];
+    const elements=Array.from(gridCell.children);
+    elements.forEach(el=>el.classList.add('disappear'));
+    cellValues[i]=[];
+    setTimeout(()=>renderCell(i),400);
+  }
+  lastDeletedNumber=null;
+  currentNumber=1;
+}
+</script>
+</body>
+</html>
