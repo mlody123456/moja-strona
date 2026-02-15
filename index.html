@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Siatka 6x6 z cyframi</title>
-
     <style>
         /* Tło strony */
         body {
@@ -65,7 +64,7 @@
             margin-top: 10px;
         }
 
-        /* Styl dla siatki */
+        /* Siatka */
         .restart-button {
             background: linear-gradient(to bottom, #5d9c66, #306b39);
             border: 2px solid #000;
@@ -79,6 +78,7 @@
             margin-bottom: 20px;
             transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
             text-align: center;
+            display: none;
         }
 
         .restart-button:hover {
@@ -97,6 +97,7 @@
             grid-template-columns: repeat(6, 100px);
             grid-template-rows: repeat(6, 100px);
             gap: 10px;
+            display: none;
         }
 
         .grid-item {
@@ -111,6 +112,7 @@
             color: #4dff91;
             cursor: pointer;
             box-shadow: 0px 4px 8px rgba(0,0,0,0.5);
+            text-align: center;
         }
 
         .grid-item:hover { background-color: #3d3d3d; }
@@ -163,14 +165,14 @@
         <p id="login-error" class="error-message" style="display:none;">Błędna nazwa użytkownika lub hasło</p>
     </div>
 
-    <!-- Przycisk Restart i siatka -->
-    <button id="restart-button" class="restart-button" onclick="restartGrid()" style="display:none;">Restart</button>
-    <div class="grid-container" id="grid-container" style="display:none;"></div>
+    <!-- Siatka -->
+    <button id="restart-button" class="restart-button" onclick="restartGrid()">Restart</button>
+    <div class="grid-container" id="grid-container"></div>
 
     <script>
         // Przechowywanie danych logowania
-        const storedUsername = "malpa"; // Zmieniona nazwa użytkownika
-        const storedPassword = "malpa123"; // Zmienione hasło
+        const storedUsername = "malpa";
+        const storedPassword = "malpa123";
 
         // Funkcja logowania
         document.getElementById("login-form").addEventListener("submit", function(e) {
@@ -181,7 +183,7 @@
 
             if (username === storedUsername && password === storedPassword) {
                 // Jeśli dane są poprawne
-                sessionStorage.setItem("loggedIn", true);  // Zapisz stan logowania w sessionStorage
+                sessionStorage.setItem("loggedIn", true);  // Zapisz stan logowania
                 document.getElementById("login-container").style.display = "none";  // Ukryj formularz logowania
                 document.getElementById("restart-button").style.display = "block"; // Pokaż przycisk Restart
                 showGrid();  // Pokaż siatkę
@@ -198,6 +200,7 @@
             showGrid();  // Pokaż siatkę
         }
 
+        // Funkcja wyświetlania siatki
         function showGrid() {
             const gridContainer = document.getElementById("grid-container");
             let currentNumber = 1;
@@ -218,18 +221,4 @@
                 const cell = gridContainer.children[index];
                 cell.textContent = '';
                 cellValues[index].forEach((num, i) => {
-                    if (i > 0) {
-                        const sep = document.createElement('span');
-                        sep.classList.add('separator', 'appear');
-                        sep.textContent = '|';
-                        cell.appendChild(sep);
-                    }
-                    const numElem = document.createElement('span');
-                    numElem.classList.add('number', 'appear');
-                    numElem.textContent = num;
-                    cell.appendChild(numElem);
-                });
-            }
-
-            // Dodawanie liczby
-            function addNumber(index
+                    if (i
