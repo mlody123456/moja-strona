@@ -190,7 +190,7 @@
                 document.body.appendChild(snowflake);
             }
         }
-        createSnowflakes();
+        createSnowflakes(); // Uruchomienie generowania śniegu
 
         // Przechowywanie danych logowania
         const storedUsername = "123";
@@ -216,4 +216,10 @@
             }
         });
 
-        // Sprawdzanie stanu log
+        // Funkcja do pokazania siatki
+        function showGrid() {
+            const gridContainer = document.getElementById("grid-container");
+            let currentNumber = 1;
+            let lastDeletedNumber = null;
+            const cellValues = new Array(36).fill(null).map(() => []);
+
