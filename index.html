@@ -97,7 +97,7 @@
             grid-template-columns: repeat(6, 100px);
             grid-template-rows: repeat(6, 100px);
             gap: 10px;
-            display: none;
+            display: none; /* Na początku ukryta */
         }
 
         .grid-item {
@@ -186,7 +186,7 @@
                 sessionStorage.setItem("loggedIn", true);  // Zapisz stan logowania
                 document.getElementById("login-container").style.display = "none";  // Ukryj formularz logowania
                 document.getElementById("restart-button").style.display = "block"; // Pokaż przycisk Restart
-                showGrid();  // Pokaż siatkę
+                document.getElementById("grid-container").style.display = "grid";  // Pokaż siatkę
             } else {
                 // Błędne dane logowania
                 document.getElementById("login-error").style.display = "block";
@@ -197,7 +197,7 @@
         if (sessionStorage.getItem("loggedIn") === "true") {
             document.getElementById("login-container").style.display = "none";  // Ukryj formularz logowania
             document.getElementById("restart-button").style.display = "block";  // Pokaż przycisk Restart
-            showGrid();  // Pokaż siatkę
+            document.getElementById("grid-container").style.display = "grid";  // Pokaż siatkę
         }
 
         // Funkcja wyświetlania siatki
@@ -209,16 +209,4 @@
 
             // Tworzenie siatki
             for (let i = 0; i < 36; i++) {
-                const cell = document.createElement("div");
-                cell.classList.add("grid-item");
-                cell.addEventListener("click", () => addNumber(i));
-                cell.addEventListener("contextmenu", (e) => removeNumber(e, i));
-                gridContainer.appendChild(cell);
-            }
-
-            // Renderowanie komórki
-            function renderCell(index) {
-                const cell = gridContainer.children[index];
-                cell.textContent = '';
-                cellValues[index].forEach((num, i) => {
-                    if (i
+                const cell = document
