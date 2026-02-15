@@ -78,7 +78,7 @@
             margin-bottom: 20px;
             transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
             text-align: center;
-            display: none;
+            display: none;  /* Na początku ukryty */
         }
 
         .restart-button:hover {
@@ -97,7 +97,7 @@
             grid-template-columns: repeat(6, 100px);
             grid-template-rows: repeat(6, 100px);
             gap: 10px;
-            display: none; /* Na początku ukryta */
+            display: none;  /* Na początku ukryta */
         }
 
         .grid-item {
@@ -176,7 +176,7 @@
 
         // Funkcja logowania
         document.getElementById("login-form").addEventListener("submit", function(e) {
-            e.preventDefault();
+            e.preventDefault(); // Zapobiega przeładowaniu strony
 
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
@@ -187,6 +187,7 @@
                 document.getElementById("login-container").style.display = "none";  // Ukryj formularz logowania
                 document.getElementById("restart-button").style.display = "block"; // Pokaż przycisk Restart
                 document.getElementById("grid-container").style.display = "grid";  // Pokaż siatkę
+                showGrid(); // Uruchom funkcję wyświetlania siatki
             } else {
                 // Błędne dane logowania
                 document.getElementById("login-error").style.display = "block";
@@ -198,6 +199,7 @@
             document.getElementById("login-container").style.display = "none";  // Ukryj formularz logowania
             document.getElementById("restart-button").style.display = "block";  // Pokaż przycisk Restart
             document.getElementById("grid-container").style.display = "grid";  // Pokaż siatkę
+            showGrid(); // Uruchom funkcję wyświetlania siatki
         }
 
         // Funkcja wyświetlania siatki
@@ -209,4 +211,5 @@
 
             // Tworzenie siatki
             for (let i = 0; i < 36; i++) {
-                const cell = document
+                const cell = document.createElement("div");
+                cell.classList.add
