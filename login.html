@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neon Login</title>
+<style>
+body{
+  margin:0;height:100vh;display:flex;justify-content:center;align-items:center;flex-direction:column;
+  background:#000;font-family:'Courier New',monospace;color:#0f0;overflow:hidden;
+}
+body::before{
+  content:"";position:absolute;width:100%;height:100%;
+  background:radial-gradient(circle at center,#0f0 0%,#000 70%);
+  animation:pulse 4s infinite alternate; z-index:-1;
+}
+@keyframes pulse{0%{opacity:0.2;}100%{opacity:0.6;}}
+#fade-cover{position:fixed;top:0;left:0;width:100%;height:100%;
+  background:#000;z-index:999;pointer-events:none;opacity:0;transition:opacity 0.8s ease;}
+.fade-out{opacity:1;}
+
+.login-box{
+  background: rgba(0,0,0,0.85);
+  border:2px solid #0f0;
+  box-shadow:0 0 20px #0f0,0 0 40px #0f0 inset;
+  padding:30px;border-radius:12px;width:320px;text-align:center;
+  animation:boxGlow 2s infinite alternate;
+}
+@keyframes boxGlow{
+  0%{box-shadow:0 0 20px #0f0,0 0 40px #0f0 inset;}
+  50%{box-shadow:0 0 30px #0f0,0 0 60px #0f0 inset;}
+  100%{box-shadow:0 0 20px #0f0,0 0 40px #0f0 inset;}
+}
+h2{color:#0f0;text-shadow:0 0 8px #0f0;margin-bottom:20px;
+animation:titleGlow 2s infinite alternate;}
+@keyframes titleGlow{0%{text-shadow:0 0 8px #0f0;}50%{text-shadow:0 0 15px #0f0;}100%{text-shadow:0 0 8px #0f0;}}
+input{
+  width:90%;padding:12px;margin:10px 0;background:#000;border:2px solid #0f0;
+  border-radius:6px;color:#0f0;font-size:18px;outline:none;text-align:center;transition: all 0.2s;
+  font-family:'Courier New',monospace;
+}
+input:focus{box-shadow:0 0 12px #0f0;border-color:#0f0;animation:inputGlow 1.5s infinite alternate;}
+@keyframes inputGlow{0%{box-shadow:0 0 12px #0f0;}50%{box-shadow:0 0 20px #0f0;}100%{box-shadow:0 0 12px #0f0;}}
+button{
+  width:95%;padding:12px;margin-top:15px;background:#0f0;color:#000;font-weight:bold;
+  font-size:18px;border:none;border-radius:6px;cursor:pointer;box-shadow:0 0 10px #0f0;
+  transition: all 0.2s;animation:buttonPulse 2s infinite alternate;font-family:'Courier New',monospace;
+}
+button:hover{box-shadow:0 0 25px #0f0,0 0 50px #0f0 inset;transform:scale(1.05);}
+@keyframes buttonPulse{0%{box-shadow:0 0 10px #0f0;}50%{box-shadow:0 0 20px #0f0;}100%{box-shadow:0 0 10px #0f0;}}
+.error{color:#f00;text-shadow:0 0 5px #f00;margin-top:10px;display:none;}
+
+#volumeSlider {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  -webkit-appearance: none;
+  background: #000;
+  border: 2px solid #0f0;
+  border-radius: 8px;
+  height: 8px;
+}
+#volumeSlider::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:16px;height:16px;border-radius:50%;background:#0f0;
+  cursor:pointer;box-shadow:0 0 8px #0f0,0 0 12px #0f0 inset;
+}
+@keyframes shakeRed{
+0%{transform:translateX(0); border-color:#f00; box-shadow:0 0 12px #f00;}
+25%{transform:translateX(-5px);}
+50%{transform:translateX(5px);}
+75%{transform:translateX(-5px);}
+100%{transform:translateX(0);}
+}
+</style>
+</head>
+<body>
+
+<div id="fade-cover"></div>
+
+<div class="login-box">
+<h2>ZALOGUJ SIĘ</h2>
+<input id="user" placeholder="Login">
+<input id="pass" type="password" placeholder="Hasło">
+<button onclick="loginClick()">Zaloguj się</button>
+<p id="err" class="error">Złe dane!</p>
+</div>
+
+<input type="range" min="0" max="1" step="0.05" value="1" id="volumeSlider">
+<audio id="click-sound" src="https://freesound.org/data/previews/256/256113_3263906-lq.mp3"></audio>
+
+<script>
+let volume=1;
+const userInput=document.getElementById("user");
+const passInput=document.getElementById("pass");
+document.getElementById("volumeSlider").addEventListener("input", e=>{volume=parseFloat(e.target.value);});
+
+function playClick(){
+    const clickAudio=document.getElementById("click-sound");
+    clickAudio.currentTime=0;
+    clickAudio.volume=volume;
+    clickAudio.play();
+}
+
+function loginClick(){
+    playClick();
+    const u=userInput.value;
+    const p=passInput.value;
+    if(u==="123" && p==="123"){
+        document.getElementById("fade-cover").classList.add("fade-out");
+        setTimeout(()=>{window.location.href="menu.html";},800);
+    } else {
+        const err=document.getElementById("err");
+        err.style.display="block";
+        userInput.style.animation="shakeRed 0.3s 3";
+        passInput.style.animation="shakeRed 0.3s 3";
+        setTimeout(()=>{userInput.style.animation=""; passInput.style.animation="";},900);
+    }
+}
+</script>
+</body>
+</html>
