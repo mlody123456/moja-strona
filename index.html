@@ -164,13 +164,13 @@
     </div>
 
     <!-- Przycisk Restart i siatka -->
-    <button id="restart-button" class="restart-button" onclick="restartGrid()">Restart</button>
-    <div class="grid-container" id="grid-container"></div>
+    <button id="restart-button" class="restart-button" onclick="restartGrid()" style="display:none;">Restart</button>
+    <div class="grid-container" id="grid-container" style="display:none;"></div>
 
     <script>
         // Przechowywanie danych logowania
-        const storedUsername = "user";
-        const storedPassword = "tajnehaslo123";
+        const storedUsername = "malpa"; // Zmieniona nazwa użytkownika
+        const storedPassword = "malpa123"; // Zmienione hasło
 
         // Funkcja logowania
         document.getElementById("login-form").addEventListener("submit", function(e) {
@@ -183,7 +183,7 @@
                 // Jeśli dane są poprawne
                 sessionStorage.setItem("loggedIn", true);  // Zapisz stan logowania w sessionStorage
                 document.getElementById("login-container").style.display = "none";  // Ukryj formularz logowania
-                alert("Zalogowano pomyślnie!");
+                document.getElementById("restart-button").style.display = "block"; // Pokaż przycisk Restart
                 showGrid();  // Pokaż siatkę
             } else {
                 // Błędne dane logowania
@@ -194,6 +194,7 @@
         // Sprawdzanie stanu logowania
         if (sessionStorage.getItem("loggedIn") === "true") {
             document.getElementById("login-container").style.display = "none";  // Ukryj formularz logowania
+            document.getElementById("restart-button").style.display = "block";  // Pokaż przycisk Restart
             showGrid();  // Pokaż siatkę
         }
 
@@ -231,9 +232,4 @@
             }
 
             // Dodawanie liczby
-            function addNumber(index) {
-                const cell = cellValues[index];
-                let numToAdd;
-                if (lastDeletedNumber !== null) {
-                    numToAdd = lastDeletedNumber;
-                    last
+            function addNumber(index
