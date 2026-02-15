@@ -1,82 +1,178 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siatka 6x6</title>
-    <style>
-        /* Styl siatki */
-        body {
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            height: 100vh;
-            background: linear-gradient(to bottom, #555555, #1a1a1a);
-            margin: 0;
-        }
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(6, 100px);
-            grid-template-rows: repeat(6, 100px);
-            gap: 10px;
-        }
-        .grid-item {
-            width: 100px;
-            height: 100px;
-            background-color: #555555;
-            border: 2px solid #4dff91;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 30px;
-            color: #4dff91;
-            cursor: pointer;
-            box-shadow: 0px 4px 8px rgba(0,0,0,0.5);
-        }
-        .grid-item:hover { background-color: #3d3d3d; }
-        .restart-button {
-            background: linear-gradient(to bottom, #5d9c66, #306b39);
-            border: 2px solid #000;
-            padding: 12px 24px;
-            font-size: 20px;
-            cursor: pointer;
-            color: white;
-            border-radius: 8px;
-            box-shadow: 0px 4px 8px rgba(0,0,0,0.4);
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Siatka 6x6 z cyframi</title>
+
+<style>
+body {
+    font-family: 'Arial', sans-serif; /* Zmieniona czcionka na Arial (prosta i wyraźna) */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    background: linear-gradient(to bottom, #555555, #1a1a1a);
+    margin: 0;
+}
+
+/* Przycisk Restart z ciemnym zielonym gradientem i czarnym obrysem napisu */
+.restart-button {
+    background: linear-gradient(to bottom, #5d9c66, #306b39); /* Gradient od ciemnej zieleni do jaśniejszej */
+    border: 2px solid #000;
+    padding: 12px 24px;
+    font-size: 20px; /* Zwiększony rozmiar czcionki */
+    cursor: pointer;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.4);
+    -webkit-text-stroke: 1px black; /* Czarny obrys napisu */
+    font-family: 'Arial', sans-serif; /* Normalna czcionka dla przycisku */
+    font-weight: bold;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    text-align: center;
+}
+.restart-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0px 4px 16px rgba(0,0,0,0.7);
+    background: linear-gradient(to bottom, #6ab67e, #4c7e46); /* Jaśniejszy gradient przy hover */
+}
+.restart-button:active {
+    transform: scale(0.95);
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.5);
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(6, 100px);
+    grid-template-rows: repeat(6, 100px);
+    gap: 10px;
+}
+.grid-item {
+    width: 100px;
+    height: 100px;
+    background-color: #555555;
+    border: 2px solid #4dff91;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px; /* Większy rozmiar czcionki */
+    color: #4dff91;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.5);
+    text-align: center;
+    white-space: nowrap;
+}
+.grid-item:hover { background-color: #3d3d3d; }
+
+/* Liczby i separatory */
+.number, .separator {
+    opacity: 0;
+    transform: scale(0);
+    display: inline-block;
+}
+.number {
+    padding: 0 3px;
+    border-radius: 6px;
+    text-shadow: -1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;
+}
+.separator {
+    padding: 0 5px;
+    font-size: 30px;
+    border-radius: 12px; /* Zaokrąglony separator */
+    text-shadow: -1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;
+    color: white;
+    vertical-align: middle;
+}
+
+/* Animacje */
+@keyframes appear {0% {opacity:0; transform: scale(0);} 100% {opacity:1; transform: scale(1);}}
+@keyframes disappear {0% {opacity:1; transform: scale(1);} 100% {opacity:0; transform: scale(0);}}
+.appear {animation: appear 0.4s forwards;}
+.disappear {animation: disappear 0.4s forwards;}
+</style>
 </head>
 <body>
-    <button id="restart-button" class="restart-button" onclick="restartGrid()">Restart</button>
-    <div class="grid-container" id="grid-container"></div>
 
-    <script>
-        // Funkcja sprawdzająca logowanie
-        if (localStorage.getItem("loggedIn") !== "true") {
-            window.location.href = "login.html"; // Jeśli użytkownik nie jest zalogowany, przekieruj na stronę logowania
-        }
+<button class="restart-button" onclick="restartGrid()">Restart</button>
+<div class="grid-container" id="grid-container"></div>
 
-        // Funkcja wyświetlania siatki
-        function showGrid() {
-            const gridContainer = document.getElementById("grid-container");
-            for (let i = 0; i < 36; i++) {
-                const cell = document.createElement("div");
-                cell.classList.add("grid-item");
-                gridContainer.appendChild(cell);
-            }
-        }
-        showGrid(); // Pokazanie siatki
+<script>
+const gridContainer = document.getElementById("grid-container");
+let currentNumber = 1;
+let lastDeletedNumber = null;
+const cellValues = new Array(36).fill(null).map(()=>[]);
 
-        // Funkcja restartu siatki
-        function restartGrid() {
-            const gridContainer = document.getElementById("grid-container");
-            gridContainer.innerHTML = ''; // Usunięcie wszystkich komórek
-            showGrid(); // Ponowne wyświetlenie siatki
+// Tworzenie siatki
+for(let i=0;i<36;i++){
+    const cell = document.createElement("div");
+    cell.classList.add("grid-item");
+    cell.addEventListener("click",()=>addNumber(i));
+    cell.addEventListener("contextmenu",(e)=>removeNumber(e,i));
+    gridContainer.appendChild(cell);
+}
+
+// Renderowanie komórki
+function renderCell(index){
+    const cell = gridContainer.children[index];
+    cell.textContent = '';
+    cellValues[index].forEach((num,i)=>{
+        if(i>0){
+            const sep = document.createElement('span');
+            sep.classList.add('separator','appear');
+            sep.textContent='|';
+            cell.appendChild(sep);
         }
-    </script>
+        const numElem = document.createElement('span');
+        numElem.classList.add('number','appear');
+        numElem.textContent=num;
+        cell.appendChild(numElem);
+    });
+}
+
+// Dodawanie liczby
+function addNumber(index){
+    const cell = cellValues[index];
+    let numToAdd;
+    if(lastDeletedNumber!==null){
+        numToAdd=lastDeletedNumber;
+        lastDeletedNumber=null;
+    } else {
+        numToAdd=currentNumber;
+        currentNumber++;
+        if(currentNumber>36) currentNumber=1;
+    }
+    cell.push(numToAdd);
+    renderCell(index);
+}
+
+// Usuwanie liczby
+function removeNumber(event,index){
+    event.preventDefault();
+    const cell = cellValues[index];
+    if(cell.length===0) return;
+    lastDeletedNumber = cell.pop();
+    const gridCell = gridContainer.children[index];
+    const elements = Array.from(gridCell.children);
+    elements.forEach(el => el.classList.add('disappear')); // Animacja znikania liczby
+    setTimeout(() => renderCell(index), 400);
+}
+
+// Restart
+function restartGrid(){
+    for(let i=0;i<36;i++){
+        const gridCell = gridContainer.children[i];
+        const elements = Array.from(gridCell.children);
+        elements.forEach(el => el.classList.add('disappear'));
+        cellValues[i]=[];
+        setTimeout(() => renderCell(i), 400);
+    }
+    lastDeletedNumber=null;
+    currentNumber=1;
+}
+</script>
+
 </body>
 </html>
